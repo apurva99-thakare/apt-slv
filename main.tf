@@ -162,17 +162,5 @@ resource "aws_instance" "apurva-jenkins" {
   tags = {
     Name = "Apurva-jenkins"
   }
-  user_data = "<<-EOF
-  #!/bin/bash
-  sudo wget -O /etc/yum.repos.d/jenkins.repo \
-    https://pkg.jenkins.io/redhat/jenkins.repo
-  sudo rpm --import https://pkg.jenkins.io/redhat/jenkins.io-2023.key
-  sudo yum upgrade -y
-  sudo yum install fontconfig -y
-  sudo yum install java-17* -y
-  sudo yum install jenkins -y
-  sudo systemctl enable jenkins
-  sudo systemctl start jenkins
-  EOF"
 }
 
