@@ -1,0 +1,33 @@
+pipeline {
+    agent {label 'slave'}
+
+    stages {
+        stage('install-terraform') {
+            steps {
+                sh '''
+                sudo yum install -y yum-utils shadow-utils
+                sudo yum-config-manager --add-repo https://rpm.releases.hashicorp.com/AmazonLinux/hashicorp.repo
+                sudo yum -y install terraform
+                '''
+            }
+        }
+        stage('git checkout') {
+            steps {
+                sh ''' 
+                sudo yum install git -y '''
+                checkout scmGit(branches: [[name: '*/main']], extensions: [], userRemoteConfigs: [[credentialsId: 'apurva-git', url: 'https://github.com/apurva99-thakare/apt-slv.git']])
+            
+            }
+        }    
+        stage('deploy') {
+            steps {
+               sh'''
+               terraform init
+               terraform destroy
+               terraform plan 
+               terraform apply --auto-approve
+               '''
+            }
+        }
+    }  
+}
